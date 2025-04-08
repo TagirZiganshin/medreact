@@ -14,7 +14,7 @@ const About = () => {
 
     tl.fromTo(
       containerRef.current,
-      { opacity: 0, rotateX: -20, rotateY: -180, scale: 0.8 },
+      { opacity: 0, rotateX: 0, rotateY: -180, scale: 0.8 },
       { opacity: 1, rotateX: 0, rotateY: 0, scale: 1, duration: 2 }
     );
     tl.fromTo(
@@ -33,8 +33,8 @@ const About = () => {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center py-12 px-4 sm:px-6 lg:px-8"
       ref={containerRef}
+      className="min-h-screen flex items-start justify-center bg-cover bg-center py-12 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl p-8 sm:p-12 lg:p-16 transform transition-all">
         <h2 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">

@@ -94,7 +94,7 @@ const Header = () => {
             </Link>
           </div>
 
-          <div ref={menuRef} className="hidden md:flex md:justify-end">
+          <div ref={menuRef} className="hidden lg:flex lg:justify-end">
             <Link to="/home">
               <span
                 ref={(el) => (linksRef.current[0] = el)}
@@ -211,7 +211,7 @@ const Header = () => {
             )}
           </div>
 
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={toggleMenu}
               className="text-white focus:outline-none"
@@ -238,7 +238,7 @@ const Header = () => {
         </div>
 
         {isOpen && (
-          <div ref={mobileMenuRef} className="md:hidden py-4">
+          <div ref={mobileMenuRef} className="lg:hidden py-4">
             <div className="flex flex-col items-start space-y-4">
               <Link to="/home">
                 <span
@@ -246,6 +246,14 @@ const Header = () => {
                   onClick={() => setIsOpen(false)}
                 >
                   Главная Страница
+                </span>
+              </Link>
+              <Link to="/chatai">
+                <span
+                  className="text-white font-semibold cursor-pointer"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Нейросеть
                 </span>
               </Link>
               <Link to="/about">

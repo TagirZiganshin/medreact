@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import BeatLoader from "react-spinners/BeatLoader";
 
-const SITE_URL = "http://ns1.thanksl4.beget.tech/chatai/";
+const SITE_URL = "http://localhost:5173/chatai/";
 const SITE_NAME = "Title";
 
 const ChatAi = () => {
@@ -89,10 +89,10 @@ const ChatAi = () => {
   return (
     <div
       ref={chatRef}
-      className="p-6 max-w-md mx-auto bg-gradient-to-r from-blue-50 to-white rounded-xl shadow-xl space-y-4"
+      className="p-6 max-[33rem]:w-[300px] max-md:w-lg w-xl mx-auto bg-gradient-to-r from-blue-50 to-white rounded-xl shadow-xl space-y-4"
     >
       <h1 className="text-2xl font-extrabold text-center text-blue-700">
-        Нейросеть на основе медицины
+        Чем я могу помочь?
       </h1>
       <textarea
         className="w-full p-3 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"

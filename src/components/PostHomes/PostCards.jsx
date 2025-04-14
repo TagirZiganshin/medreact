@@ -83,16 +83,16 @@ const PostCards = ({ post }) => {
       </div>
       <h1
         ref={titleRef}
-        className="transition duration-700 text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl font-semibold"
+        className="transition duration-700 text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl max-[24rem]:mb-2 max-[24rem]:text-lg font-semibold"
       >
         <Link to={`/post/${post.id}`}>{post.name}</Link>
       </h1>
       <div
         ref={infoRef}
-        className="block lg:flex text-center items-center justify-center mb-8 w-full"
+        className="block lg:flex text-center items-center justify-center mb-8 w-full max-[24rem]:mb-3"
       >
-        <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8">
-          <p className="inline align-middle text-gray-700 ml-2 font-medium text-lg">
+        <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8 max-[24rem]:mb-2">
+          <p className="inline align-middle text-gray-700 ml-2 font-medium text-lg max-[24rem]:text-sm">
             {post.user.name}
           </p>
         </div>
@@ -121,7 +121,7 @@ const PostCards = ({ post }) => {
       </div>
       <p
         ref={descRef}
-        className="text-center text-lg text-gray-700 font-normal px-4 lg:px-20 mb-8"
+        className="text-center text-lg text-gray-700 font-normal px-4 lg:px-20 mb-8 max-[24rem]:mb-2 max-[24rem]:text-sm"
       >
         {post.description}
       </p>

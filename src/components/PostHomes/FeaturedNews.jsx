@@ -10,10 +10,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const responsive = {
-  superLargeDesktop: { breakpoint: { max: 4000, min: 1024 }, items: 5 },
-  desktop: { breakpoint: { max: 1024, min: 768 }, items: 3 },
-  tablet: { breakpoint: { max: 768, min: 640 }, items: 2 },
-  mobile: { breakpoint: { max: 640, min: 0 }, items: 1 },
+  superLargeDesktop: { breakpoint: { max: 4000, min: 1800 }, items: 5 },
+  desktop: { breakpoint: { max: 1800, min: 1200 }, items: 4 },
+  desktopmin: { breakpoint: { max: 1200, min: 900 }, items: 3 },
+  tablet: { breakpoint: { max: 900, min: 600 }, items: 2 },
+  mobile: { breakpoint: { max: 600, min: 0 }, items: 1 },
 };
 
 const FeaturedNews = () => {
@@ -97,7 +98,8 @@ const FeaturedNews = () => {
           onClick();
           animateArrow("left");
         }}
-        className="absolute arrow-btn left-arrow left-0 text-center py-3 cursor-pointer bg-pink-600 rounded-full z-10"
+        className="absolute arrow-btn left-arrow left-0 text-center py-3 cursor-pointer 
+          bg-pink-600 rounded-full z-10 max-[400px]:hidden"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +126,8 @@ const FeaturedNews = () => {
           onClick();
           animateArrow("right");
         }}
-        className="absolute arrow-btn right-arrow right-0 text-center py-3 cursor-pointer bg-pink-600 rounded-full z-10"
+        className="absolute arrow-btn right-arrow right-0 text-center py-3 cursor-pointer 
+          bg-pink-600 rounded-full z-10 max-[400px]:hidden"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +157,10 @@ const FeaturedNews = () => {
         customLeftArrow={<CustomLeftArrow />}
         customRightArrow={<CustomRightArrow />}
         responsive={responsive}
-        itemClass="px-4"
+        itemClass="px-4 max-[20rem]:px-0"
+        autoPlay={true}
+        autoPlaySpeed={4000}
+        shouldResetAutoplay={false}
       >
         {news.map((post) => (
           <div key={post.id} ref={addSlideRef}>

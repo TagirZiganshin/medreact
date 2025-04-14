@@ -93,7 +93,7 @@ const PostWidget = () => {
               <div
                 key={post.id}
                 ref={(el) => (newsRefs.current[index] = el)}
-                className="flex items-center w-full mb-4"
+                className="flex items-center w-full mb-4 max-[30rem]:flex-col"
               >
                 <div className="w-16 flex-none">
                   <img
@@ -104,14 +104,14 @@ const PostWidget = () => {
                     src={`/images/news/${post.image}`}
                   />
                 </div>
-                <div className="flex-grow ml-4">
+                <div className="flex-grow ml-4 max-[30rem]:text-center max-[30rem]:ml-0">
                   <p className="text-gray-500 font-xs">
                     {formatDistanceToNow(new Date(post.created_at), {
                       addSuffix: true,
                       locale: ru,
                     })}
                   </p>
-                  <Link to={`/new/${post.id}`} className="text-md">
+                  <Link to={`/new/${post.id}`} className="text-md ">
                     {post.text}
                   </Link>
                 </div>

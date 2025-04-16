@@ -73,26 +73,26 @@ const PostCards = ({ post }) => {
       ref={cardRef}
       className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8"
     >
-      <div className="relative shadow-md pb-70 max-[380px]:pb-40 md:pb-80 mb-6">
+      <div className="relative shadow-md pb-70 max-[395px]:pb-40 md:pb-80 mb-6">
         <img
           ref={imageRef}
           src={`/images/posts/${post.image}`}
           alt=""
-          className="object-center absolute h-70 max-[380px]:h-40 md:h-80 w-full object-cover shadow-lg rounded-t-lg lg:rounded-lg"
+          className="object-center absolute h-70 max-[395px]:h-40 md:h-80 w-full object-cover shadow-lg rounded-t-lg lg:rounded-lg"
         />
       </div>
       <h1
         ref={titleRef}
-        className="transition duration-700 text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl max-[24rem]:mb-2 max-[24rem]:text-lg font-semibold"
+        className="transition duration-700 text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl max-[26rem]:mb-2 max-[26rem]:text-lg font-semibold"
       >
         <Link to={`/post/${post.id}`}>{post.name}</Link>
       </h1>
       <div
         ref={infoRef}
-        className="block lg:flex text-center items-center justify-center mb-8 w-full max-[24rem]:mb-3"
+        className="block lg:flex text-center items-center justify-center mb-8 w-full max-[26rem]:mb-3"
       >
-        <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8 max-[24rem]:mb-2">
-          <p className="inline align-middle text-gray-700 ml-2 font-medium text-lg max-[24rem]:text-sm">
+        <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8 max-[26rem]:mb-2">
+          <p className="inline align-middle text-gray-700 ml-2 font-medium text-lg max-[26rem]:text-sm">
             {post.user.name}
           </p>
         </div>
@@ -121,7 +121,7 @@ const PostCards = ({ post }) => {
       </div>
       <p
         ref={descRef}
-        className="text-center text-lg text-gray-700 font-normal px-4 lg:px-20 mb-8 max-[24rem]:mb-2 max-[24rem]:text-sm"
+        className="text-center text-lg text-gray-700 font-normal px-4 lg:px-20 mb-8 max-[26rem]:mb-2 max-[26rem]:text-sm"
       >
         {post.description}
       </p>

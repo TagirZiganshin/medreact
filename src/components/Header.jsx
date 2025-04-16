@@ -87,9 +87,9 @@ const Header = () => {
             <Link to="/">
               <span
                 ref={logoRef}
-                className="cursor-pointer font-bold text-4xl text-white"
+                className="cursor-pointer font-bold text-5xl text-white"
               >
-                Prisma
+                МЕДУС
               </span>
             </Link>
           </div>

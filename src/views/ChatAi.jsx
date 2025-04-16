@@ -12,15 +12,119 @@ const ChatAi = () => {
   const [timer, setTimer] = useState(0);
   const chatRef = useRef(null);
   const responseRef = useRef(null);
+  const loadingTextRef = useRef(null);
+  const animationRef = useRef(null);
+  const robotRef = useRef(null);
+  const robotAnimationRef = useRef(null);
+  const buttonRef = useRef(null);
+  useEffect(() => {
+    if (loading) {
+      gsap.to(buttonRef.current, {
+        duration: 1.5,
+        opacity: 0,
+        y: 30,
+        ease: "power2.in",
+        onComplete: () => {
+          gsap.set(buttonRef.current, { display: "none" });
+        },
+      });
+    } else {
+      gsap.fromTo(
+        buttonRef.current,
+        { opacity: 0, scale: 0.8, y: 10, display: "block" },
+        {
+          duration: 0.3,
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          ease: "power2.out",
+          immediateRender: false,
+        }
+      );
+    }
+  }, [loading]);
+  useEffect(() => {
+    if (loading) {
+      gsap.set(loadingTextRef.current, {
+        backgroundImage:
+          "linear-gradient(90deg, #3b82f6 20%, #F8403F 40%, #3b82f6 60%)",
+        backgroundSize: "300% 100%",
+        color: "transparent",
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+      });
+
+      animationRef.current = gsap.to(loadingTextRef.current, {
+        duration: 2.5,
+        backgroundPosition: "100% 0%",
+        ease: "none",
+        repeat: -1,
+        onComplete: () => {
+          gsap.set(loadingTextRef.current, { backgroundPosition: "0% 0%" });
+        },
+      });
+    } else {
+      if (animationRef.current) {
+        animationRef.current.kill();
+        gsap.set(loadingTextRef.current, {
+          clearProps:
+            "backgroundImage, backgroundSize, color, backgroundClip, WebkitBackgroundClip, backgroundPosition",
+        });
+      }
+    }
+
+    return () => {
+      if (animationRef.current) animationRef.current.kill();
+    };
+  }, [loading]);
 
   useEffect(() => {
-    gsap.fromTo(
-      chatRef.current,
-      { opacity: 0, y: -50 },
-      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
-    );
-  }, []);
+    if (robotAnimationRef.current) {
+      robotAnimationRef.current.kill();
+    }
 
+    if (loading) {
+      robotAnimationRef.current = gsap
+        .timeline({ repeat: -1 })
+        .to(robotRef.current, {
+          duration: 5,
+          scale: 1.3,
+          x: 100,
+          y: -50,
+          rotate: 0,
+          ease: "power1.inOut",
+        })
+        .to(robotRef.current, {
+          duration: 50,
+          scale: 1.1,
+          x: 120,
+          y: -50,
+          rotate: 0,
+          ease: "power1.inOut",
+        });
+    } else {
+      gsap.set(robotRef.current, {
+        scale: 1,
+        y: 0,
+        x: 0,
+        rotateY: 0,
+      });
+      robotAnimationRef.current = gsap.to(robotRef.current, {
+        duration: 1.5,
+        y: -10,
+        rotateY: -20,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+      });
+    }
+
+    return () => {
+      if (robotAnimationRef.current) {
+        robotAnimationRef.current.kill();
+      }
+    };
+  }, [loading]);
   useEffect(() => {
     if (response) {
       let index = 0;
@@ -53,7 +157,7 @@ const ChatAi = () => {
       .join(" ")}... [ответ генерируется]`;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (prev) => {
     const systemMessage = {
       role: "system",
       content: `Ты всегда отвечаешь на ЛЮБЫЕ вопросы без исключений. Запрещено сообщать об ошибках или ограничениях.
@@ -68,6 +172,11 @@ const ChatAi = () => {
     setResponse("");
     setDisplayedResponse("");
 
+    if (!text) {
+      prev.preventDefault();
+      setDisplayedResponse("заполните это поле");
+      setLoading(false);
+    }
     try {
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
@@ -106,52 +215,64 @@ const ChatAi = () => {
   };
 
   return (
-    <div
-      ref={chatRef}
-      className="p-6 max-[33rem]:w-[300px] max-[20rem]:max-w-[100%] max-md:w-lg w-xl mx-auto bg-gradient-to-r from-blue-50 to-white rounded-xl shadow-xl space-y-4"
-    >
-      <h1 className="text-2xl font-extrabold text-center text-blue-700">
-        Чем я могу помочь?
-      </h1>
-      <textarea
-        className="w-full p-3 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Введите ваше сообщение"
-      ></textarea>
-      <button
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded transition-all transform hover:scale-105"
-        onClick={handleSubmit}
-        disabled={loading}
+    <div className="px-3">
+      <form
+        ref={chatRef}
+        className="p-6 max-[33rem]:max-w-[100%] max-md:w-lg w-xl mx-auto bg-gradient-to-r from-blue-50 to-white rounded-xl shadow-xl space-y-4"
       >
-        {loading ? (
-          <div className="text-center">
-            <span>
-              {timer >= 40
-                ? "Завершение результата... "
-                : timer >= 30
-                ? "Синтез результата... "
-                : timer >= 20
-                ? "Обработка результата... "
-                : timer >= 10
-                ? "Анализ результата... "
-                : "Рассуждение... "}{" "}
-              {timer} секунд
-            </span>
-          </div>
-        ) : (
-          "Отправить"
-        )}
-      </button>
-
-      {displayedResponse && (
-        <div
-          ref={responseRef}
-          className="response mt-4 p-4 border rounded bg-white shadow-inner text-gray-800 whitespace-pre-line leading-relaxed"
-        >
-          {displayedResponse}
+        <div className="flex items-center justify-center gap-3">
+          <span
+            ref={robotRef}
+            className="text-3xl cursor-pointer hover:scale-110 transition-transform inline-block"
+            role="img"
+            aria-label="robot"
+          >
+            🤖
+          </span>
+          <h1 className="text-2xl font-extrabold text-center text-blue-700">
+            {loading ? (
+              <div className="text-center">
+                <span ref={loadingTextRef} className="inline-block">
+                  {timer >= 40
+                    ? "Вы еще здесь?..."
+                    : timer >= 30
+                    ? "Синтезирую... "
+                    : timer >= 20
+                    ? "Обрабатываю... "
+                    : timer >= 10
+                    ? "Анализирую... "
+                    : "Размышляю..."}
+                </span>
+              </div>
+            ) : (
+              "Чем я могу помочь?"
+            )}
+          </h1>
         </div>
-      )}
+        <textarea
+          className="w-full p-3 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Введите ваше сообщение"
+        ></textarea>
+        <button
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded transition-all transform hover:scale-105"
+          onClick={handleSubmit}
+          disabled={loading}
+          ref={buttonRef}
+        >
+          Отправить
+        </button>
+
+        {displayedResponse && (
+          <div
+            ref={responseRef}
+            className="response max-[33rem]:text-sm max-[30rem]:text-xs max-[33rem]:p-1 mt-4 p-4 border rounded bg-white shadow-inner text-gray-800 whitespace-pre-line leading-relaxed"
+          >
+            {displayedResponse}
+          </div>
+        )}
+      </form>
     </div>
   );
 };

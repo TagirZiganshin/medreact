@@ -45,10 +45,11 @@ const About = () => {
             ref={(el) => (textRefs.current[0] = el)}
             className="text-lg leading-relaxed"
           >
-            <span className="font-semibold text-blue-600">Prisma</span> — это
-            ведущий медицинский информационный портал в России, созданный в 2025
-            году. Мы предоставляем доступ к самой актуальной и достоверной
-            информации о здоровье, диагностике и лечении.
+            <span className="font-semibold text-blue-600">МЕДУС</span>{" "}
+            (Медицина, Единство, Доверие, Услуги, Современность) — это ведущий
+            медицинский информационный портал в России, созданный в 2025 году.
+            Мы предоставляем доступ к самой актуальной и достоверной информации
+            о здоровье, диагностике и лечении.
           </p>
           <p
             ref={(el) => (textRefs.current[1] = el)}
@@ -63,7 +64,7 @@ const About = () => {
             ref={(el) => (textRefs.current[2] = el)}
             className="text-lg leading-relaxed"
           >
-            <span className="font-semibold text-purple-600">Prisma</span> — это
+            <span className="font-semibold text-purple-600">МЕДУС</span> — это
             не просто портал, это сообщество, где пациенты и врачи могут
             обмениваться опытом, задавать вопросы и находить ответы. Мы
             стремимся к тому, чтобы каждый человек мог получить качественную

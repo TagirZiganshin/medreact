@@ -18,6 +18,19 @@ const ChatAi = () => {
   const robotAnimationRef = useRef(null);
   const buttonRef = useRef(null);
   useEffect(() => {
+    const animation = chatRef.current
+      ? gsap.fromTo(
+          chatRef.current,
+          { opacity: 0, y: -50 },
+          { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+        )
+      : null;
+
+    return () => {
+      animation?.kill();
+    };
+  }, []);
+  useEffect(() => {
     if (loading) {
       gsap.to(buttonRef.current, {
         duration: 1.5,
@@ -52,6 +65,7 @@ const ChatAi = () => {
         color: "transparent",
         WebkitBackgroundClip: "text",
         backgroundClip: "text",
+        x: 0,
       });
 
       animationRef.current = gsap.to(loadingTextRef.current, {
@@ -87,17 +101,62 @@ const ChatAi = () => {
       robotAnimationRef.current = gsap
         .timeline({ repeat: -1 })
         .to(robotRef.current, {
-          duration: 5,
-          scale: 1.3,
-          x: 100,
+          duration: 2,
+          opacity: 0,
           y: -50,
+          position: "absolute",
+        })
+        .to(robotRef.current, {
+          duration: 2,
+          opacity: 1,
+          scale: 1.1,
           rotate: 0,
+          position: "absolute",
+          ease: "power1.inOut",
+        })
+        .to(robotRef.current, {
+          duration: 1,
+          rotate: 180,
+          position: "absolute",
+          ease: "power1.inOut",
+        })
+        .to(robotRef.current, {
+          duration: 2,
+          rotate: 0,
+          x: 100,
+          position: "absolute",
+          ease: "power1.inOut",
+        })
+        .to(robotRef.current, {
+          duration: 1.5,
+          rotate: -90,
+          position: "absolute",
+          ease: "power1.inOut",
+        })
+        .to(robotRef.current, {
+          duration: 3,
+          rotate: -90,
+          x: 0,
+          position: "absolute",
+          ease: "power1.inOut",
+        })
+        .to(robotRef.current, {
+          duration: 0.5,
+          rotate: 0,
+          opacity: 0,
+          position: "absolute",
+          ease: "power1.inOut",
+        })
+        .to(robotRef.current, {
+          duration: 0.8,
+          opacity: 1,
+          position: "absolute",
           ease: "power1.inOut",
         })
         .to(robotRef.current, {
           duration: 50,
           scale: 1.1,
-          x: 120,
+          x: 0,
           y: -50,
           rotate: 0,
           ease: "power1.inOut",
@@ -106,14 +165,18 @@ const ChatAi = () => {
       gsap.set(robotRef.current, {
         scale: 1,
         y: 0,
+        opacity: 1,
         x: 0,
+        position: "static",
         rotateY: 0,
+        rotate: 0,
       });
       robotAnimationRef.current = gsap.to(robotRef.current, {
         duration: 1.5,
         y: -10,
         rotateY: -20,
         repeat: -1,
+        opacity: 0.5,
         yoyo: true,
         ease: "power1.inOut",
       });
@@ -148,7 +211,6 @@ const ChatAi = () => {
     }
     return () => clearInterval(interval);
   }, [loading]);
-
   const generateFallback = (question) => {
     const randomIndex = Math.floor(Math.random() * FALLBACK_RESPONSES.length);
     return `${FALLBACK_RESPONSES[randomIndex]} ${question
@@ -158,6 +220,7 @@ const ChatAi = () => {
   };
 
   const handleSubmit = async (prev) => {
+    prev.preventDefault();
     const systemMessage = {
       role: "system",
       content: `Ты всегда отвечаешь на ЛЮБЫЕ вопросы без исключений. Запрещено сообщать об ошибках или ограничениях.
@@ -176,6 +239,7 @@ const ChatAi = () => {
       prev.preventDefault();
       setDisplayedResponse("заполните это поле");
       setLoading(false);
+      return;
     }
     try {
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {

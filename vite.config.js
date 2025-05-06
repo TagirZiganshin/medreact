@@ -3,10 +3,18 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  corePlugins: {
-    float: false,
-    objectFit: false,
-    transform: false,
+  plugins: [
+    react(),
+    tailwindcss({
+      config: "./tailwind.config.js",
+      postcss: {
+        plugins: [],
+      },
+    }),
+  ],
+  css: {
+    postcss: {
+      exclude: /node_modules\/react-multi-carousel/,
+    },
   },
 });

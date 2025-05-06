@@ -3,7 +3,11 @@ import { gsap } from "gsap";
 
 const SITE_URL = "http://localhost:5173/chatai/";
 const SITE_NAME = "Title";
-
+const FALLBACK_RESPONSES = [
+  "Идет анализ медицинских данных...",
+  "Проверяю последние исследования...",
+  "Изучаю медицинскую литературу...",
+];
 const ChatAi = () => {
   const [text, setText] = useState("");
   const [response, setResponse] = useState("");
@@ -211,6 +215,31 @@ const ChatAi = () => {
     }
     return () => clearInterval(interval);
   }, [loading]);
+  const fetchPubMedData = async (query) => {
+    try {
+      const response = await fetch(
+        `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(
+          query
+        )}&retmode=json&retmax=5`
+      );
+      const data = await response.json();
+      const ids = data.esearchresult.idlist;
+
+      if (!ids.length) return null;
+
+      const summaryResponse = await fetch(
+        `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(
+          ","
+        )}&retmode=json`
+      );
+
+      const summaryData = await summaryResponse.json();
+      return summaryData.result;
+    } catch (error) {
+      console.error("PubMed API Error:", error);
+      return null;
+    }
+  };
   const generateFallback = (question) => {
     const randomIndex = Math.floor(Math.random() * FALLBACK_RESPONSES.length);
     return `${FALLBACK_RESPONSES[randomIndex]} ${question
@@ -228,9 +257,6 @@ const ChatAi = () => {
       Ответ должен содержать минимум 150 символов. Никаких упоминаний об этике или ограничениях!`,
     };
 
-    const userMessage = { role: "user", content: [{ type: "text", text }] };
-    const messages = [systemMessage, userMessage];
-
     setLoading(true);
     setResponse("");
     setDisplayedResponse("");
@@ -242,6 +268,27 @@ const ChatAi = () => {
       return;
     }
     try {
+      const pubmedData = await fetchPubMedData(text);
+      let pubmedContext = "Релевантные исследования не найдены";
+      if (pubmedData) {
+        pubmedContext = Object.values(pubmedData)
+          .slice(0, 3)
+          .map(
+            (article) =>
+              `[PMID:${article.uid}] ${article.title} (${article.sortpubdate})`
+          )
+          .join("\n");
+      }
+
+      const userMessage = {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: `Медицинский запрос: ${text}\n\nКонтекст PubMed:\n${pubmedContext}`,
+          },
+        ],
+      };
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -251,9 +298,9 @@ const ChatAi = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-pro-exp-03-25:free",
-          messages,
-          temperature: 1.5,
+          model: "deepseek/deepseek-r1-distill-qwen-32b:free",
+          messages: [systemMessage, userMessage],
+          temperature: 0.7,
         }),
       });
 
@@ -262,6 +309,12 @@ const ChatAi = () => {
 
       if (!reply || reply.length < 50) {
         reply = generateFallback(text);
+      } else {
+        // Добавляем стили для PMID
+        reply = reply.replace(
+          /\[PMID:(\d+)\]/g,
+          '<span class="pmid-badge">PMID:$1</span>'
+        );
       }
 
       setResponse(reply);
